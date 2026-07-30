@@ -1,0 +1,341 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+/* =========================================================
+   Shoptet úpravy – CLSmoto (clsmoto.cz)
+   Hostováno na GitHub Pages, viz README.
+   Motiv: paxio-merkur (+ dark-merkur.css zůstává v <head>).
+   Načítá se jako poslední → přebíjí style.css i dark-merkur.css.
+
+   Moduly:
+     0) Overflow / anti-skákání do stran (přeneseno z patičky)
+     1) Logo v hlavičce
+     2) Otevírací doba v horní liště
+     3) Menu „Akce" červeně
+     4) Akční ceny + badge červeně (výpis i detail)
+     5) Badge do pravého horního rohu fotky na detailu
+     6) Pořadí bannerů v patičce
+     7) Obsahové stránky / blog – typografie
+     8) Tabulka velikostí (.size-table)
+     9) Cena na landing page (.id-1)
+    10) Carousel ovládání
+    11) Karta majitele „Osobně ručím za Vaši spokojenost"
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   0) Overflow – anti-skákání do stran (mobil i desktop)
+   Přeneseno z patičky. overflow-x:hidden (ne clip) proto, že
+   clip dělal problémy interaktivním prvkům.
+   POZOR: hidden na <body> může v některých motivech udělat
+   z body scroll kontejner → když se rozbije sticky header
+   nebo lazy-load, zkusit variantu jen na html.
+   --------------------------------------------------------- */
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Miniatury a slidery se nesmí roztáhnout na plnou šířku */
+.p-detail .p-thumbnails img,
+.product-gallery .thumbnails img,
+.swiper-slide img,
+.slick-slide img {
+  width: auto !important;
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+/* Na desktopu musí menu „přetékat", jinak nejsou vidět roletky */
+@media (min-width: 769px) {
+  .navigation-wrapper,
+  #navigation,
+  .menu-helper,
+  .dropdown-menu,
+  .categories-menu {
+    overflow: visible !important;
+  }
+}
+
+.swiper-wrapper,
+.slick-track {
+  width: auto;
+}
+
+
+/* ---------------------------------------------------------
+   1) Logo v hlavičce
+   POZN.: v původním <head> byly dvě protichůdné hodnoty
+   (60px v prvním <style>, 46px !important v posledním).
+   Platila ta poslední = 46px, tak ji držíme na jednom místě.
+   --------------------------------------------------------- */
+#header .site-name a img,
+.site-name a img {
+  max-height: 46px !important;
+}
+
+
+/* ---------------------------------------------------------
+   2) Otevírací doba v horní liště (před kontakty)
+   --------------------------------------------------------- */
+.top-navigation-contacts::before {
+  content: "Po–Pá 8:00–16:30";
+  margin-right: 16px;
+  padding-right: 16px;
+  border-right: 1px solid rgba(255, 255, 255, .2);
+  color: #ccc;
+  font-size: 14px;
+}
+
+
+/* ---------------------------------------------------------
+   3) Menu „Akce" – červené zvýraznění (beze změny velikosti)
+   --------------------------------------------------------- */
+a[href="/akce/"][data-testid="headerMenuItem"] {
+  background: #e30613 !important;
+  color: #fff !important;
+  transition: background .2s ease;
+}
+
+a[href="/akce/"][data-testid="headerMenuItem"] b {
+  color: #fff !important;
+}
+
+a[href="/akce/"][data-testid="headerMenuItem"]:hover {
+  background: #c20410 !important;
+  color: #fff !important;
+}
+
+/* Diamant pod položkou Akce – sjednotit s červenou */
+.navigation-in > ul > li > a[href="/akce/"]::after,
+.navigation-in > ul > li:hover > a[href="/akce/"]::after,
+.navigation-in > ul > li.exp > a[href="/akce/"]::after {
+  background-color: #e30613 !important;
+}
+
+
+/* ---------------------------------------------------------
+   4) Akční ceny a badge červeně
+   --------------------------------------------------------- */
+.product:has(.flag-discount) .price-final strong {
+  color: #e30613;
+}
+
+/* Výpis produktů */
+.p:has(.flag-discount) .prices .price-final strong,
+.p:has(.flag-discount) .prices .price-final {
+  color: #e30613 !important;
+}
+
+/* Badge se slevou */
+.flag.flag-discount {
+  background-color: #e30613 !important;
+}
+
+/* Detail produktu */
+.p-detail:has(.flag-discount) .price-final,
+.p-detail:has(.price-standard) .price-final {
+  color: #e30613;
+}
+
+
+/* ---------------------------------------------------------
+   5) Detail produktu – badge do pravého horního rohu fotky
+   Wrapper dostane vlastní stacking context se stropem (z-index:1),
+   aby badge (z-index:60) přebil cloud-zoom (50), ale celý blok
+   zůstal pod rozbaleným menu.
+   --------------------------------------------------------- */
+.p-image-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.p-image {
+  position: relative;
+}
+
+.p-image-wrapper .flags-extra {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 60;
+  margin: 0;
+}
+
+
+/* ---------------------------------------------------------
+   6) Pořadí bannerů v patičce (obrácené)
+   --------------------------------------------------------- */
+.custom-footer__banner3 { order: 1; }
+.custom-footer__banner2 { order: 2; }
+.custom-footer__banner1 { order: 3; }
+
+
+/* ---------------------------------------------------------
+   7) Obsahové stránky a blog – větší typografie
+   POZOR: line-height je v rem, tzn. závisí na kořenovém
+   font-size motivu. Kdyby se text „rozjel", přepsat na
+   bezrozměrné číslo (line-height: 1.7).
+   --------------------------------------------------------- */
+.type-page main#content,
+.type-page main#content p,
+.type-page main#content span,
+.type-page main#content ul,
+.type-page main#content li,
+.type-page main#content a,
+.type-post main#content,
+.type-post main#content p,
+.type-post main#content span,
+.type-post main#content ul,
+.type-post main#content li,
+.type-post main#content a {
+  font-size: 18px;
+  line-height: 3.6rem;
+}
+
+.contact-detail-item img {
+  max-width: 80px;
+}
+
+
+/* ---------------------------------------------------------
+   8) Tabulka velikostí (.size-table)
+   OPRAVENO: v původním kódu chyběl středník za `width:100%`,
+   takže se ignorovalo i `min-width` (celé pravidlo bylo vadné).
+   --------------------------------------------------------- */
+table.size-table {
+  width: 100%;
+  min-width: 990px;
+}
+
+table.size-table td:nth-of-type(1) { width: 15%; }
+table.size-table td:nth-of-type(2) { width: 25%; }
+table.size-table td:nth-of-type(3) { width: 15%; }
+table.size-table td:nth-of-type(4) { width: 25%; }
+table.size-table td:nth-of-type(5) { width: 20%; }
+
+table.size-table td {
+  min-width: 220px;
+  height: 60px;
+  padding: 5px 0 5px 10px;
+}
+
+table.size-table td,
+table.size-table td p,
+table.size-table td span {
+  font-size: 16px !important;
+  line-height: 2.6rem !important;
+  padding: 0 !important;
+  margin: 20px 10px !important;
+}
+
+table.size-table tr:nth-of-type(1) td {
+  color: #fff;
+  background: #69c4f1;
+}
+
+table.size-table tr:nth-child(2n+2) td {
+  color: #444;
+  background: #fafafa;
+}
+
+
+/* ---------------------------------------------------------
+   9) Cena na landing page (.id-1)
+   --------------------------------------------------------- */
+.id-1 .cena .cena-detail p {
+  padding: 2rem 0 0 0 !important;
+  margin: 5px 0 0 !important;
+  width: 100%;
+  font-family: "Roboto", sans-serif !important;
+  font-size: 29px !important;
+  font-weight: 800;
+  color: #39277a;
+  text-align: center;
+  line-height: 1;
+}
+
+
+/* ---------------------------------------------------------
+   10) Carousel – ovládací šipky
+   --------------------------------------------------------- */
+.carousel-control {
+  width: 5%;
+}
+
+@media (max-width: 676px) {
+  .carousel-control {
+    display: none;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   11) Karta majitele „Osobně ručím za Vaši spokojenost"
+   HTML staví shoptet.js (modul A) a vkládá ho na homepage
+   nad taby Doporučené / Akční zboží / Novinky.
+   Skrytá je do doby, než ji JS umístí (display:flex).
+   --------------------------------------------------------- */
+#cls-owner-move {
+  display: none;
+  background: #fff;
+  border: 1px solid #ededed;
+  border-radius: 20px;
+  padding: 35px;
+  margin: 40px auto;
+  max-width: 1140px;
+  align-items: center;
+  gap: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, .05);
+  box-sizing: border-box;
+}
+
+.cls-owner-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+}
+
+.cls-owner-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.2);
+  object-position: center 35%;
+  display: block;
+}
+
+.cls-owner-text h2 {
+  margin: 0 0 15px 0 !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  color: #000 !important;
+}
+
+.cls-owner-text p {
+  margin: 0 0 10px 0 !important;
+  line-height: 1.6 !important;
+  color: #444 !important;
+}
+
+.cls-owner-name {
+  margin-top: 20px !important;
+  font-weight: 700;
+}
+
+@media (max-width: 991px) {
+  #cls-owner-move {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+    margin: 20px 10px;
+  }
+}
