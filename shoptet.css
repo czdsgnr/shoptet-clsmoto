@@ -20,6 +20,7 @@
      9) Cena na landing page (.id-1)
     10) Carousel ovládání
     11) Karta majitele „Osobně ručím za Vaši spokojenost"
+    12) Tabulky v popisu produktu na mobilu (technické údaje)
    ========================================================= */
 
 
@@ -337,5 +338,70 @@ table.size-table tr:nth-child(2n+2) td {
     text-align: center;
     padding: 30px 20px;
     margin: 20px 10px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   12) Tabulky v popisu produktu na mobilu (technické údaje)
+   PROBLÉM (klient 27. 7. 2026): tabulka „Technické údaje" je do
+   popisu vložená z editoru i s natvrdo zadanou šířkou (~690 px)
+   a pevnými šířkami buněk (266 + 424 px). Na mobilu (351 px
+   obsahu) přetekla ven a `overflow-x:hidden` na <body> (modul 0)
+   přesah uřízl → pravý sloupec s hodnotami nebyl vidět a nešlo
+   na něj ani odscrollovat. Ověřeno na NIU MQi+ Sport i QJ FORT 125N.
+
+   ŘEŠENÍ: na mobilu inline šířky přebijeme, tabulka se roztáhne
+   na 100 % a text se zalomí (table-layout:fixed, 46 % popisek /
+   54 % hodnota). `.size-table` (modul 8) vynecháváme – ta má
+   min-width schválně a řeší se scrollem ve wrapperu.
+   --------------------------------------------------------- */
+@media (max-width: 991px) {
+  /* Fallback pro tabulky, které se opravdu nedají zalomit
+     (víc sloupců, .size-table) – nativní Shoptet wrapper scrolluje. */
+  #description .scroll-wrapper,
+  .basic-description .scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #description table:not(.size-table):not(.detail-parameters),
+  .basic-description table:not(.size-table):not(.detail-parameters) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    /* zruší i atribut height="474" z editoru */
+    height: auto !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  #description table:not(.size-table):not(.detail-parameters) td,
+  #description table:not(.size-table):not(.detail-parameters) th,
+  .basic-description table:not(.size-table):not(.detail-parameters) td,
+  .basic-description table:not(.size-table):not(.detail-parameters) th {
+    width: auto !important;
+    height: auto !important;
+    padding: 9px 10px !important;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  /* První sloupec = popisek parametru */
+  #description table:not(.size-table):not(.detail-parameters) tr > td:first-child,
+  .basic-description table:not(.size-table):not(.detail-parameters) tr > td:first-child {
+    width: 46% !important;
+    font-weight: 600;
+  }
+
+  #description table:not(.size-table):not(.detail-parameters) caption,
+  .basic-description table:not(.size-table):not(.detail-parameters) caption {
+    font-weight: 700;
+    font-size: 17px;
+    text-align: left;
+    padding: 0 0 10px;
   }
 }
