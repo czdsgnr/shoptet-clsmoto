@@ -15,8 +15,8 @@ ne jsDelivr). Důvod: limit 8192 znaků v Shoptet `<head>` a možnost verzovat
 
 | Soubor | Co obsahuje |
 |--------|-------------|
-| `shoptet.css` | všechny styly (moduly 0–13, viz hlavička souboru) |
-| `shoptet.js` | modul A) karta majitele na HP, B) anti-overflow pojistka na mobilu, C) rozbalovací technické údaje na detailu |
+| `shoptet.css` | všechny styly (moduly 0–14, viz hlavička souboru) |
+| `shoptet.js` | modul A) karta majitele na HP, B) anti-overflow pojistka na mobilu, C) rozbalovací technické údaje na detailu, D) formulář pro odstoupení od smlouvy |
 | `puvodni-kod/` | archiv toho, co bylo v adminu v hlavičce a patičce k 30. 7. 2026 |
 
 ## Moduly v `shoptet.css`
@@ -35,6 +35,7 @@ ne jsDelivr). Důvod: limit 8192 znaků v Shoptet `<head>` a možnost verzovat
 11. Karta majitele „Osobně ručím za Vaši spokojenost"
 12. Tabulky v popisu produktu na mobilu (technické údaje)
 13. Rozbalovací „Technické údaje" v pravém sloupci detailu – **přání klienta**
+14. Formulář pro odstoupení od smlouvy – **přání klienta**
 
 ## Vložení do Shoptetu
 
@@ -47,8 +48,8 @@ V adminu **Vzhled a obsah → Editor → HTML kódy v hlavičce** zůstane jen t
       href="https://cdn.myshoptet.com/usr/paxio.myshoptet.com/user/documents/blank/dark-merkur.css" />
 
 <!-- 2) Naše úpravy (statická verze – po každém deployi bumpni ?v=N) -->
-<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=3" />
-<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=3"></script>
+<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=4" />
+<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=4"></script>
 
 <!-- 3) Microsoft Clarity -->
 <script type="text/javascript">
@@ -84,6 +85,25 @@ Místo statických `?v=N` jde použít loader s časovým razítkem, který obch
 
 Pozor: dev loader načítá CSS asynchronně → stránka chvíli problikne v původním
 vzhledu (FOUC). Až bude hotovo, přepnout zpět na statický `<link>` + `?v=N`.
+
+## Formulář pro odstoupení od smlouvy
+
+Na `/odstoupeni-od-smlouvy/` staví JS (modul D) formulář podle vzoru z nařízení
+vlády č. 363/2013 Sb. (§ 1829 obč. zák.). Odesílá se **klasickým POSTem na
+nativní Shoptet endpoint** `/action/MailForm/SendEmail/` s `formId=1` – tedy
+stejnou cestou jako kontaktní formulář na `/kontakty/`, takže zpráva dorazí do
+obvyklé schránky obchodu a Shoptet po odeslání zobrazí své vlastní potvrzení.
+Žádná externí služba, žádné `mailto:` (to bez nastaveného mail klienta neudělá nic).
+
+Detaily:
+
+- viditelná pole schválně **nemají `name`** → POSTem jde jen to, co endpoint zná
+  (`formId`, `fullName`, `email`, `message`, `consents[]`, honeypot `surname`);
+  všechny údaje se skládají do `message`
+- `consents[]=40` = ID souhlasu s podmínkami ochrany osobních údajů, převzato
+  z živého kontaktního formuláře. **Kdyby obchod souhlas v adminu překopal,
+  je potřeba ID zkontrolovat.**
+- adresa prodávajícího je v konstantě `SELLER` v `shoptet.js`
 
 ## Deploy
 
