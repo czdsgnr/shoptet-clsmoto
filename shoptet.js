@@ -180,6 +180,12 @@
   /* 1) podle popisku tabulky („Technické údaje"),
      2) fallback: dvousloupcová tabulka, kde většina buněk v prvním sloupci
         končí dvojtečkou (= parametr: hodnota) – kdyby popisek chyběl. */
+  /* Tabulku s vloženým médiem (video, obrázek) nikdy nepřesouváme – schovala
+     by se do zavřené rozbalovačky a působilo by to, jako že obsah zmizel. */
+  function hasMedia(t) {
+    return !!t.querySelector('iframe, video, embed, object, img');
+  }
+
   function findSpecsTable() {
     var tables = document.querySelectorAll('#description table, .basic-description table');
     var i, t;
@@ -187,6 +193,7 @@
     for (i = 0; i < tables.length; i++) {
       t = tables[i];
       if (t.classList.contains('size-table') || t.classList.contains('detail-parameters')) continue;
+      if (hasMedia(t)) continue;
       var cap = t.querySelector('caption');
       if (cap && /technick/i.test(cap.textContent || '')) return t;
     }
@@ -194,6 +201,7 @@
     for (i = 0; i < tables.length; i++) {
       t = tables[i];
       if (t.classList.contains('size-table') || t.classList.contains('detail-parameters')) continue;
+      if (hasMedia(t)) continue;
       if (t.rows.length < 8 || !t.rows[0] || t.rows[0].cells.length !== 2) continue;
       var labelLike = 0;
       for (var r = 0; r < t.rows.length; r++) {
