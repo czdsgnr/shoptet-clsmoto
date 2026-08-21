@@ -6,6 +6,7 @@
      A) Karta majitele „Osobně ručím za Vaši spokojenost"
         (staví HTML a vkládá ho na HP nad blok Doporučené)
      B) Anti-overflow pojistka na mobilu (přeneseno z patičky)
+     C) Rozbalovací „Technické údaje" v pravém sloupci detailu
    ========================================================= */
 (function () {
   'use strict';
@@ -149,10 +150,131 @@
   }
 
 
+
+  /* === C) Rozbalovací „Technické údaje" na detailu ====================
+     Klient (30. 7. 2026): tabulka technických údajů byla až dole v popisu
+     (~3000 px od začátku stránky), uživatel se k ní musel proscrollovat.
+     Přesouváme ji proto do pravého sloupce pod krátký popis a schováváme
+     do rozbalovačky, která vzhledem kopíruje nativní taby motivu.
+
+     POZOR NA TIMING: paxio-merkur staví .p-info-wrapper (nadpis, skladovost,
+     buy-box) až vlastním JS po DOMContentLoaded. Když do toho sáhneme dřív,
+     motivu se přesun rozhodí a celý pravý sloupec se nedostaví – proto
+     detailReady() strážce (stejná past jako na svetzarovek.eu). */
+
+  var pageLoaded = false;
+  window.addEventListener('load', function () { pageLoaded = true; });
+
+  function isProductDetail() {
+    var c = document.body ? document.body.className : '';
+    return /(^|\s)type-product(\s|$)/.test(c);
+  }
+
+  /* Motiv je hotový, až má nadpis v pravém sloupci; pojistka = window load. */
+  function detailReady() {
+    if (document.querySelector('.p-info-wrapper .p-detail-inner-header')) return true;
+    return pageLoaded;
+  }
+
+  /* 1) podle popisku tabulky („Technické údaje"),
+     2) fallback: dvousloupcová tabulka, kde většina buněk v prvním sloupci
+        končí dvojtečkou (= parametr: hodnota) – kdyby popisek chyběl. */
+  function findSpecsTable() {
+    var tables = document.querySelectorAll('#description table, .basic-description table');
+    var i, t;
+
+    for (i = 0; i < tables.length; i++) {
+      t = tables[i];
+      if (t.classList.contains('size-table') || t.classList.contains('detail-parameters')) continue;
+      var cap = t.querySelector('caption');
+      if (cap && /technick/i.test(cap.textContent || '')) return t;
+    }
+
+    for (i = 0; i < tables.length; i++) {
+      t = tables[i];
+      if (t.classList.contains('size-table') || t.classList.contains('detail-parameters')) continue;
+      if (t.rows.length < 8 || !t.rows[0] || t.rows[0].cells.length !== 2) continue;
+      var labelLike = 0;
+      for (var r = 0; r < t.rows.length; r++) {
+        var first = t.rows[r].cells[0];
+        if (first && /:\s*$/.test((first.textContent || '').trim())) labelLike++;
+      }
+      if (labelLike / t.rows.length >= 0.6) return t;
+    }
+    return null;
+  }
+
+  function buildSpecsToggle() {
+    if (document.querySelector('.cls-specs')) return true;
+
+    var wrap = document.querySelector('.p-info-wrapper');
+    if (!wrap) return false;
+
+    var table = findSpecsTable();
+    /* Produkt bez takové tabulky – není co přesouvat, hotovo. */
+    if (!table) return true;
+
+    var cap = table.querySelector('caption');
+    var label = cap && (cap.textContent || '').trim() ? cap.textContent.trim() : 'Technické údaje';
+
+    var box = document.createElement('div');
+    box.className = 'cls-specs';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cls-specs__toggle';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', 'cls-specs-panel');
+    var labelEl = document.createElement('span');
+    labelEl.textContent = label;
+    btn.appendChild(labelEl);
+
+    var panel = document.createElement('div');
+    panel.className = 'cls-specs__panel';
+    panel.id = 'cls-specs-panel';
+
+    var inner = document.createElement('div');
+    inner.className = 'cls-specs__inner';
+    inner.appendChild(table);          /* přesun, ne kopie – obsah zůstane na stránce 1× */
+    panel.appendChild(inner);
+
+    box.appendChild(btn);
+    box.appendChild(panel);
+
+    var anchor = wrap.querySelector('.p-short-description') ||
+                 wrap.querySelector('.detail-parameters') ||
+                 wrap.querySelector('.availability-value');
+
+    if (anchor && anchor.parentNode === wrap) {
+      wrap.insertBefore(box, anchor.nextSibling);
+    } else {
+      wrap.appendChild(box);
+    }
+
+    btn.addEventListener('click', function () {
+      var open = box.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    return true;
+  }
+
+  function initSpecsToggle() {
+    if (!isProductDetail()) return;
+
+    var tries = 0;
+    var timer = setInterval(function () {
+      if (detailReady() && buildSpecsToggle()) { clearInterval(timer); return; }
+      if (++tries > 40) clearInterval(timer);   /* max 8 s */
+    }, 200);
+  }
+
+
   /* === Start ========================================================== */
 
   function init() {
     initOwnerCard();
+    initSpecsToggle();
     fixMobileOverflow();
   }
 
