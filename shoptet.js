@@ -7,6 +7,7 @@
         (staví HTML a vkládá ho na HP nad blok Doporučené)
      B) Anti-overflow pojistka na mobilu (přeneseno z patičky)
      C) Rozbalovací „Technické údaje" v pravém sloupci detailu
+     D) Formulář pro odstoupení od smlouvy na /odstoupeni-od-smlouvy/
    ========================================================= */
 (function () {
   'use strict';
@@ -270,11 +271,220 @@
   }
 
 
+
+  /* === D) Formulář pro odstoupení od smlouvy ==========================
+     Stránka /odstoupeni-od-smlouvy/ měla jen text s odkazem na „vzorový
+     formulář poskytnutý prodávajícím". Doplňujeme skutečný formulář podle
+     vzoru z nařízení vlády č. 363/2013 Sb. (§ 1829 obč. zák. – odstoupení
+     do 14 dnů).
+
+     ODESÍLÁNÍ: klasickým POSTem na nativní Shoptet endpoint kontaktního
+     formuláře `/action/MailForm/SendEmail/` (formId=1, stejný jako na
+     /kontakty/) → zpráva dorazí obvyklou cestou do schránky obchodu a
+     Shoptet po odeslání sám zobrazí své potvrzení. Žádná externí služba,
+     žádné mailto (to na desktopu bez nastaveného klienta neudělá nic).
+     Viditelná pole schválně NEMAJÍ atribut name – odesílá se jen to, co
+     endpoint zná (fullName, email, message, consents[], honeypot surname);
+     všechny údaje se před odesláním složí do `message`. */
+
+  var WITHDRAWAL_PATH = '/odstoupeni-od-smlouvy/';
+
+  var SELLER = [
+    'CLS DEAL s.r.o.',
+    'Široká 241/25, 251 01 Říčany',
+    'IČ: 28260864, DIČ: CZ28260864',
+    'info@clsmoto.cz'
+  ];
+
+  /* [id, popisek, typ, povinné] */
+  var FIELDS = [
+    ['name',     'Jméno a příjmení',                    'text',     true],
+    ['address',  'Adresa (ulice a č. p., město, PSČ)',  'text',     true],
+    ['email',    'E-mail',                              'email',    true],
+    ['phone',    'Telefon',                             'tel',      false],
+    ['order',    'Číslo objednávky / faktury',          'text',     true],
+    ['ordered',  'Datum objednání',                     'date',     true],
+    ['received', 'Datum převzetí zboží',                'date',     true],
+    ['goods',    'Zboží, kterého se odstoupení týká',   'textarea', true],
+    ['account',  'Číslo účtu pro vrácení peněz',        'text',     true],
+    ['note',     'Poznámka (nepovinné)',                'textarea', false]
+  ];
+
+  function isWithdrawalPage() {
+    var path = location.pathname.replace(/\/+$/, '/');
+    if (path.charAt(path.length - 1) !== '/') path += '/';
+    return path === WITHDRAWAL_PATH;
+  }
+
+  function field(id, label, type, required) {
+    var group = document.createElement('div');
+    group.className = 'form-group cls-wd__group' + (type === 'textarea' ? ' cls-wd__group--wide' : '');
+
+    var lab = document.createElement('label');
+    lab.setAttribute('for', 'cls-wd-' + id);
+    lab.textContent = label;
+    if (required) {
+      var star = document.createElement('span');
+      star.className = 'cls-wd__req';
+      star.textContent = ' *';
+      lab.appendChild(star);
+    }
+
+    var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+    if (type !== 'textarea') input.type = type;
+    else input.rows = 3;
+    input.id = 'cls-wd-' + id;
+    input.className = 'form-control';
+    if (required) input.required = true;
+
+    group.appendChild(lab);
+    group.appendChild(input);
+    return group;
+  }
+
+  function val(id) {
+    var el = document.getElementById('cls-wd-' + id);
+    return el ? el.value.trim() : '';
+  }
+
+  function czDate(iso) {
+    if (!iso) return '';
+    var p = iso.split('-');
+    return p.length === 3 ? (+p[2]) + '. ' + (+p[1]) + '. ' + p[0] : iso;
+  }
+
+  function composeMessage() {
+    var lines = [
+      'ODSTOUPENÍ OD KUPNÍ SMLOUVY (do 14 dnů, § 1829 obč. zák.)',
+      '',
+      'Adresát: ' + SELLER.join(', '),
+      '',
+      'Oznamuji, že tímto odstupuji od smlouvy o nákupu tohoto zboží:',
+      val('goods'),
+      '',
+      'Číslo objednávky / faktury: ' + val('order'),
+      'Datum objednání: ' + czDate(val('ordered')),
+      'Datum převzetí zboží: ' + czDate(val('received')),
+      '',
+      'Spotřebitel: ' + val('name'),
+      'Adresa: ' + val('address'),
+      'E-mail: ' + val('email'),
+      'Telefon: ' + (val('phone') || '–'),
+      '',
+      'Peníze vraťte na účet: ' + val('account')
+    ];
+
+    if (val('note')) lines.push('', 'Poznámka: ' + val('note'));
+
+    lines.push('', 'Odesláno z formuláře na ' + location.origin + WITHDRAWAL_PATH +
+                   ' dne ' + new Date().toLocaleString('cs-CZ'));
+    return lines.join('\n');
+  }
+
+  function hidden(form, name, value) {
+    var i = document.createElement('input');
+    i.type = 'hidden';
+    i.name = name;
+    i.value = value;
+    form.appendChild(i);
+    return i;
+  }
+
+  function buildWithdrawalForm() {
+    if (document.querySelector('.cls-wd')) return;
+
+    var article = document.querySelector('.pageArticleDetail') ||
+                  document.querySelector('.content-inner') ||
+                  document.querySelector('main#content');
+    if (!article) return;
+
+    var box = document.createElement('section');
+    box.className = 'cls-wd';
+
+    var h = document.createElement('h2');
+    h.className = 'cls-wd__title';
+    h.textContent = 'Formulář pro odstoupení od smlouvy';
+    box.appendChild(h);
+
+    var intro = document.createElement('p');
+    intro.className = 'cls-wd__intro';
+    intro.textContent = 'Vyplňte formulář a odešlete jedním tlačítkem. Odstoupení tím ' +
+      'oznámíte prodávajícímu ve lhůtě 14 dnů od převzetí zboží. Zboží pak zašlete ' +
+      'nebo předejte do 14 dnů od tohoto oznámení.';
+    box.appendChild(intro);
+
+    var addr = document.createElement('p');
+    addr.className = 'cls-wd__seller';
+    addr.innerHTML = '<strong>Adresát:</strong><br>' + SELLER.join('<br>');
+    box.appendChild(addr);
+
+    var form = document.createElement('form');
+    form.className = 'cls-wd__form';
+    form.action = '/action/MailForm/SendEmail/';
+    form.method = 'post';
+
+    var grid = document.createElement('div');
+    grid.className = 'cls-wd__grid';
+    FIELDS.forEach(function (f) { grid.appendChild(field(f[0], f[1], f[2], f[3])); });
+    form.appendChild(grid);
+
+    /* Souhlas – stejné znění i cíl jako u nativního kontaktního formuláře */
+    var consent = document.createElement('label');
+    consent.className = 'cls-wd__consent';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id = 'cls-wd-consent';
+    cb.required = true;
+    var cText = document.createElement('span');
+    cText.innerHTML = 'Souhlasím s <a href="/podminky-ochrany-osobnich-udaju/" ' +
+      'rel="noopener noreferrer">podmínkami ochrany osobních údajů</a>. <span class="cls-wd__req">*</span>';
+    consent.appendChild(cb);
+    consent.appendChild(cText);
+    form.appendChild(consent);
+
+    var actions = document.createElement('div');
+    actions.className = 'cls-wd__actions';
+    var btn = document.createElement('button');
+    btn.type = 'submit';
+    btn.className = 'btn btn-primary cls-wd__submit';
+    btn.textContent = 'Odeslat odstoupení od smlouvy';
+    actions.appendChild(btn);
+    form.appendChild(actions);
+
+    /* Skryté pole, která zná endpoint (viditelná pole name nemají) */
+    hidden(form, 'formId', '1');
+    hidden(form, 'surname', '');                    /* honeypot – musí zůstat prázdný */
+    var hName = hidden(form, 'fullName', '');
+    var hMail = hidden(form, 'email', '');
+    var hMsg = hidden(form, 'message', '');
+    var hConsent = hidden(form, 'consents[]', '40');
+
+    form.addEventListener('submit', function (e) {
+      if (!form.reportValidity()) { e.preventDefault(); return; }
+      hName.value = val('name');
+      hMail.value = val('email');
+      hMsg.value = composeMessage();
+      hConsent.disabled = !cb.checked;
+      btn.disabled = true;
+      btn.textContent = 'Odesílám…';
+    });
+
+    box.appendChild(form);
+    article.appendChild(box);
+  }
+
+  function initWithdrawalForm() {
+    if (!isWithdrawalPage()) return;
+    buildWithdrawalForm();
+  }
+
+
   /* === Start ========================================================== */
 
   function init() {
     initOwnerCard();
     initSpecsToggle();
+    initWithdrawalForm();
     fixMobileOverflow();
   }
 

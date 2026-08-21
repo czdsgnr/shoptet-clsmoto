@@ -22,6 +22,7 @@
     11) Karta majitele „Osobně ručím za Vaši spokojenost"
     12) Tabulky v popisu produktu na mobilu (technické údaje)
     13) Rozbalovací „Technické údaje" v pravém sloupci detailu
+    14) Formulář pro odstoupení od smlouvy
    ========================================================= */
 
 
@@ -521,4 +522,107 @@ table.size-table tr:nth-child(2n+2) td {
 
 .cls-specs__panel tr:last-child td {
   border-bottom: 0 !important;
+}
+
+
+/* ---------------------------------------------------------
+   14) Formulář pro odstoupení od smlouvy
+   Staví JS (modul D) na /odstoupeni-od-smlouvy/. Vzhled drží
+   nativní třídy motivu (.form-group, .form-control, .btn),
+   tady jen rámeček, mřížka a drobnosti navíc.
+   --------------------------------------------------------- */
+.cls-wd {
+  margin: 40px 0 10px;
+  padding: 28px;
+  border: 1px solid #e4e4e4;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.cls-wd__title {
+  margin: 0 0 12px !important;
+  font-size: 24px !important;
+}
+
+.cls-wd__intro {
+  margin: 0 0 18px !important;
+  max-width: 70ch;
+}
+
+.cls-wd__seller {
+  margin: 0 0 24px !important;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid #ededed;
+  border-radius: 8px;
+  line-height: 1.6 !important;
+  font-size: 15px !important;
+}
+
+.cls-wd__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.cls-wd__group {
+  margin: 0;
+}
+
+/* Textarey přes celou šířku */
+.cls-wd__group--wide {
+  grid-column: 1 / -1;
+}
+
+.cls-wd__group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cls-wd__group .form-control {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cls-wd__req {
+  color: #e30613;
+}
+
+.cls-wd__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 22px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.cls-wd__consent input {
+  margin-top: 3px;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  accent-color: #e30613;
+}
+
+.cls-wd__actions {
+  margin-top: 22px;
+}
+
+.cls-wd__submit[disabled] {
+  opacity: .6;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  .cls-wd {
+    padding: 20px 16px;
+  }
+
+  .cls-wd__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
