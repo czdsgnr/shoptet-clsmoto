@@ -41,7 +41,7 @@
      kódu – pak ji jen přesuneme, nevyrábíme duplikát), nebo ji postavíme
      a držíme si na ni referenci. */
   function getOwnerCard() {
-    if (ownerCard && ownerCard.isConnected !== false) return ownerCard;
+    if (ownerCard) return ownerCard;
 
     var existing = document.getElementById('cls-owner-move');
     if (existing) { ownerCard = existing; return existing; }
