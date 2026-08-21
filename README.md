@@ -15,8 +15,8 @@ ne jsDelivr). Důvod: limit 8192 znaků v Shoptet `<head>` a možnost verzovat
 
 | Soubor | Co obsahuje |
 |--------|-------------|
-| `shoptet.css` | všechny styly (moduly 0–12, viz hlavička souboru) |
-| `shoptet.js` | modul A) karta majitele na HP, B) anti-overflow pojistka na mobilu |
+| `shoptet.css` | všechny styly (moduly 0–13, viz hlavička souboru) |
+| `shoptet.js` | modul A) karta majitele na HP, B) anti-overflow pojistka na mobilu, C) rozbalovací technické údaje na detailu |
 | `puvodni-kod/` | archiv toho, co bylo v adminu v hlavičce a patičce k 30. 7. 2026 |
 
 ## Moduly v `shoptet.css`
@@ -33,7 +33,8 @@ ne jsDelivr). Důvod: limit 8192 znaků v Shoptet `<head>` a možnost verzovat
 9. Cena na landing page `.id-1`
 10. Carousel ovládání
 11. Karta majitele „Osobně ručím za Vaši spokojenost"
-12. Tabulky v popisu produktu na mobilu (technické údaje) – **fix pro klienta**
+12. Tabulky v popisu produktu na mobilu (technické údaje)
+13. Rozbalovací „Technické údaje" v pravém sloupci detailu – **přání klienta**
 
 ## Vložení do Shoptetu
 
@@ -46,8 +47,8 @@ V adminu **Vzhled a obsah → Editor → HTML kódy v hlavičce** zůstane jen t
       href="https://cdn.myshoptet.com/usr/paxio.myshoptet.com/user/documents/blank/dark-merkur.css" />
 
 <!-- 2) Naše úpravy (statická verze – po každém deployi bumpni ?v=N) -->
-<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=2" />
-<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=2"></script>
+<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=3" />
+<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=3"></script>
 
 <!-- 3) Microsoft Clarity -->
 <script type="text/javascript">
