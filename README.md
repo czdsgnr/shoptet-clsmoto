@@ -8,14 +8,14 @@ ne jsDelivr). Důvod: limit 8192 znaků v Shoptet `<head>` a možnost verzovat
 - Motiv: **paxio-merkur** (stejný jako Svět žárovek), v `<head>` navíc
   `dark-merkur.css` z paxio.
 - Lokální složka: `/Users/janrohrich/Documents/Shoptet_shopy_clsmoto`
-- Repo: `https://github.com/czdsgnr/shoptet-clsmoto` *(zatím nezaložené)*
+- Repo: https://github.com/czdsgnr/shoptet-clsmoto
 - CDN: `https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css` (+ `.js`)
 
 ## Soubory
 
 | Soubor | Co obsahuje |
 |--------|-------------|
-| `shoptet.css` | všechny styly (moduly 0–11, viz hlavička souboru) |
+| `shoptet.css` | všechny styly (moduly 0–12, viz hlavička souboru) |
 | `shoptet.js` | modul A) karta majitele na HP, B) anti-overflow pojistka na mobilu |
 | `puvodni-kod/` | archiv toho, co bylo v adminu v hlavičce a patičce k 30. 7. 2026 |
 
@@ -33,6 +33,7 @@ ne jsDelivr). Důvod: limit 8192 znaků v Shoptet `<head>` a možnost verzovat
 9. Cena na landing page `.id-1`
 10. Carousel ovládání
 11. Karta majitele „Osobně ručím za Vaši spokojenost"
+12. Tabulky v popisu produktu na mobilu (technické údaje) – **fix pro klienta**
 
 ## Vložení do Shoptetu
 
