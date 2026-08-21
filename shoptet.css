@@ -421,57 +421,71 @@ table.size-table tr:nth-child(2n+2) td {
    protože pravý sloupec je užší než původních ~690 px.
    --------------------------------------------------------- */
 .cls-specs {
-  margin: 16px 0;
+  margin: 18px 0;
 }
 
+/* ZVÝRAZNĚNÍ (klient 30. 7. 2026: „je to jako rolovací nabídka, přehlédl
+   jsem to"): bílý podklad, výrazný červený rámeček a červený popisek +
+   textová nápověda „Zobrazit / Skrýt" vpravo, aby bylo jasné, že se to
+   dá rozkliknout. Červená #e30613 = stejný akcent jako akční ceny. */
 .cls-specs__toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  min-height: 40px;
+  min-height: 52px;
   padding: 0 16px;
   cursor: pointer;
   text-align: left;
   text-transform: none;
-  background: #f6f6f6;
-  border: 1px solid #e4e4e4;
-  border-radius: 0;
+  background: #fff;
+  border: 2px solid #e30613;
+  border-radius: 6px;
   box-shadow: none;
-  color: #000;
-  font: 700 14px/38px "Nunito Sans", sans-serif;
+  color: #e30613;
+  font: 700 16px/1.3 "Nunito Sans", sans-serif;
+  transition: background .15s ease, color .15s ease;
 }
 
 .cls-specs__toggle:hover,
 .cls-specs__toggle:focus {
-  background: #efefef;
-  color: #000;
+  background: #e30613;
+  color: #fff;
 }
 
-/* Šipka dolů / nahoru */
-.cls-specs__toggle::after {
-  content: "";
+/* Nápověda vpravo – text + šipka */
+.cls-specs__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.cls-specs__hint::after {
+  content: "";
   width: 8px;
   height: 8px;
-  border-right: 2px solid #000;
-  border-bottom: 2px solid #000;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
   transform: translateY(-2px) rotate(45deg);
   transition: transform .2s ease;
 }
 
-.cls-specs__toggle[aria-expanded="true"]::after {
+.cls-specs.is-open .cls-specs__hint::after {
   transform: translateY(2px) rotate(-135deg);
 }
 
-/* Rozbalování přes grid-template-rows 0fr→1fr (plynulé i bez známé výšky) */
 .cls-specs__panel {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows .25s ease;
   border: 1px solid #e4e4e4;
   border-top: 0;
+  border-radius: 0 0 6px 6px;
 }
 
 .cls-specs.is-open .cls-specs__panel {

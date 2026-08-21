@@ -230,6 +230,12 @@
     labelEl.textContent = label;
     btn.appendChild(labelEl);
 
+    /* Textová nápověda, ať je na první pohled jasné, že jde o rozbalovačku */
+    var hint = document.createElement('span');
+    hint.className = 'cls-specs__hint';
+    hint.textContent = 'Zobrazit';
+    btn.appendChild(hint);
+
     var panel = document.createElement('div');
     panel.className = 'cls-specs__panel';
     panel.id = 'cls-specs-panel';
@@ -255,6 +261,7 @@
     btn.addEventListener('click', function () {
       var open = box.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      hint.textContent = open ? 'Skrýt' : 'Zobrazit';
     });
 
     return true;
