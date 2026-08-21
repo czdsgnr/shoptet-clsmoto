@@ -539,6 +539,19 @@ table.size-table tr:nth-child(2n+2) td {
   background: #fafafa;
 }
 
+/* Modul 7 dává obsahovým stránkám font-size:18px a line-height:3.6rem –
+   uvnitř formuláře by z toho byly obří mezery mezi popisky, tak to tady
+   vracíme na normál. */
+.cls-wd p,
+.cls-wd label,
+.cls-wd span,
+.cls-wd a,
+.cls-wd input,
+.cls-wd textarea {
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+}
+
 .cls-wd__title {
   margin: 0 0 12px !important;
   font-size: 24px !important;
@@ -565,8 +578,12 @@ table.size-table tr:nth-child(2n+2) td {
   gap: 16px 20px;
 }
 
+/* Sloupec: popisek nahoře, pole vždy dole → pole v řádku sedí na sobě
+   i když se popisek zalomí na dva řádky. */
 .cls-wd__group {
   margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Textarey přes celou šířku */
@@ -576,8 +593,9 @@ table.size-table tr:nth-child(2n+2) td {
 
 .cls-wd__group label {
   display: block;
+  flex: 1 0 auto;
   margin-bottom: 6px;
-  font-size: 14px;
+  font-size: 14px !important;
   font-weight: 600;
 }
 

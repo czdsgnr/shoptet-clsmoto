@@ -299,10 +299,10 @@
   /* [id, popisek, typ, povinné] */
   var FIELDS = [
     ['name',     'Jméno a příjmení',                    'text',     true],
-    ['address',  'Adresa (ulice a č. p., město, PSČ)',  'text',     true],
+    ['address',  'Adresa (ulice, město, PSČ)',           'text',     true],
     ['email',    'E-mail',                              'email',    true],
     ['phone',    'Telefon',                             'tel',      false],
-    ['order',    'Číslo objednávky / faktury',          'text',     true],
+    ['order',    'Číslo objednávky',                     'text',     true],
     ['ordered',  'Datum objednání',                     'date',     true],
     ['received', 'Datum převzetí zboží',                'date',     true],
     ['goods',    'Zboží, kterého se odstoupení týká',   'textarea', true],
