@@ -425,9 +425,10 @@ table.size-table tr:nth-child(2n+2) td {
 }
 
 /* ZVÝRAZNĚNÍ (klient 30. 7. 2026: „je to jako rolovací nabídka, přehlédl
-   jsem to"): bílý podklad, výrazný červený rámeček a červený popisek +
-   textová nápověda „Zobrazit / Skrýt" vpravo, aby bylo jasné, že se to
-   dá rozkliknout. Červená #e30613 = stejný akcent jako akční ceny. */
+   jsem to"): plná modrá lišta s bílým textem a nápovědou „Zobrazit / Skrýt",
+   aby bylo na první pohled jasné, že se to dá rozkliknout. Modrá (ne červená)
+   proto, že červená #e30613 na webu znamená slevu – navazuje na modrou
+   z tabulky velikostí (#69c4f1). */
 .cls-specs__toggle {
   display: flex;
   align-items: center;
@@ -435,23 +436,27 @@ table.size-table tr:nth-child(2n+2) td {
   gap: 12px;
   width: 100%;
   min-height: 52px;
-  padding: 0 16px;
+  padding: 0 18px;
   cursor: pointer;
   text-align: left;
   text-transform: none;
-  background: #fff;
-  border: 2px solid #e30613;
+  background: #1878b8;
+  border: 0;
   border-radius: 6px;
   box-shadow: none;
-  color: #e30613;
+  color: #fff;
   font: 700 16px/1.3 "Nunito Sans", sans-serif;
-  transition: background .15s ease, color .15s ease;
+  transition: background .15s ease;
 }
 
 .cls-specs__toggle:hover,
 .cls-specs__toggle:focus {
-  background: #e30613;
+  background: #14618f;
   color: #fff;
+}
+
+.cls-specs.is-open .cls-specs__toggle {
+  border-radius: 6px 6px 0 0;
 }
 
 /* Nápověda vpravo – text + šipka */

@@ -48,8 +48,8 @@ V adminu **Vzhled a obsah → Editor → HTML kódy v hlavičce** zůstane jen t
       href="https://cdn.myshoptet.com/usr/paxio.myshoptet.com/user/documents/blank/dark-merkur.css" />
 
 <!-- 2) Naše úpravy (statická verze – po každém deployi bumpni ?v=N) -->
-<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=4" />
-<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=4"></script>
+<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=5" />
+<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=5"></script>
 
 <!-- 3) Microsoft Clarity -->
 <script type="text/javascript">
