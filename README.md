@@ -45,8 +45,8 @@ V adminu **Vzhled a obsah → Editor → HTML kódy v hlavičce** zůstane jen t
       href="https://cdn.myshoptet.com/usr/paxio.myshoptet.com/user/documents/blank/dark-merkur.css" />
 
 <!-- 2) Naše úpravy (statická verze – po každém deployi bumpni ?v=N) -->
-<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=1" />
-<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=1"></script>
+<link rel="stylesheet" href="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?v=2" />
+<script defer src="https://czdsgnr.github.io/shoptet-clsmoto/shoptet.js?v=2"></script>
 
 <!-- 3) Microsoft Clarity -->
 <script type="text/javascript">
@@ -106,6 +106,12 @@ curl -s "https://czdsgnr.github.io/shoptet-clsmoto/shoptet.css?x=$(date +%s)" | 
 - **Clarity běží 2×** – v hlavičce projekt `v4ahcgh1hx`, v patičce `wltgbfh9i2`.
   Dvojí měření stejného provozu; nechat jen jeden (v README výše je ponechaný
   ten z hlavičky).
+- **Karta majitele se na webu nikdy nezobrazovala** (zjištěno 30. 7. 2026):
+  původní skript hledal jeden kontejner s texty „Doporučené" + „Akční zboží" +
+  „Novinky" a délkou < 300 znaků, ale motiv každou skupinu renderuje zvlášť
+  (`div.homepage-group-title` jako přímé děti `main.content`) → nenašel nic a
+  karta zůstala viset na začátku `<body>` s `display:none`. Náš `shoptet.js`
+  se kotví na první `.homepage-group-title`; ověřeno naživo.
 - **`line-height` v `rem`** (obsahové stránky, `.size-table`) – závisí na
   kořenovém `font-size` motivu. Kdyby se řádkování rozjelo, přepsat na
   bezrozměrné číslo.
